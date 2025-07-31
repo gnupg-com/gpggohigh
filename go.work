@@ -1,0 +1,13 @@
+go 1.22.12
+
+toolchain go1.22.12
+
+use (
+	./example/add-recipient
+	./example/encrypt-file
+	./example/engine-info
+	./example/identify-file
+	./example/list-keys
+	./example/text-sig
+	./example/text-verify
+)
