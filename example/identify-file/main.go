@@ -30,7 +30,7 @@ import (
 func main() {
 
 	// check if there ar least 2 arguments
-	if len(os.Args) < 1 {
+	if len(os.Args) < 2 {
 		fmt.Println("Usage: identify-file <filename>...")
 		os.Exit(1)
 	}

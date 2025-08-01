@@ -31,10 +31,6 @@ import (
 
 func main() {
 
-	for i, a := range os.Args {
-		fmt.Fprintf(os.Stderr, "os.Args[%d] = %s\n", i, a)
-	}
-
 	// check if there is exactly one argument
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: text-sig SIGNER < CLEAR_TEXT\n")
@@ -67,11 +63,11 @@ func main() {
 	res, n, sigFP, err := gpggohigh.SignBytes(clearTextBytes, os.Args[1], true)
 	switch err {
 	case io.EOF:
-		fmt.Fprintf(os.Stderr, "SignBytes read until EOF\n")
+		fmt.Fprintf(os.Stderr, "SignBytes read until EOF\n") // this is OK
 	case nil:
 		fmt.Fprintf(os.Stderr, "SignBytes failed: %v\n", err)
 	default:
-		fmt.Fprintf(os.Stderr, "SignBytes no error\n")
+		fmt.Fprintf(os.Stderr, "SignBytes no error\n") // fine
 	}
 	if res == nil {
 		fmt.Fprintf(os.Stderr, "SignBytes failed: res is nil\n")

@@ -33,7 +33,9 @@ func main() {
 	if len(os.Args) == 2 && (os.Args[1] == "-v" ||
 		os.Args[1] == "--version" || os.Args[1] == "version") {
 		out := gpggohigh.ListAbout(true)
-		fmt.Println(out)
+		for _, line := range out {
+			fmt.Println(line)
+		}
 	}
 
 	engine, homedir, reqVer, version, err := gpggohigh.GpgEngineInfo()

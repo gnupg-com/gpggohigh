@@ -118,7 +118,7 @@ func SignBytes(plainText []byte, signWith string, armored bool) (
 //   - plainText: the original data without the signature
 //   - signatures: a slice of gpgme.Signature containing the verification results
 //   - err: an error if the verification fails
-func VerifyBytes(cipherText []byte) (plainText []byte, signatures []gpgme.SignatureType,
+func VerifyBytes(cipherText []byte) (plainText []byte, signatures []gpgme.Signature,
 	filename string, err error) {
 
 	myContext, err := gpgme.New()

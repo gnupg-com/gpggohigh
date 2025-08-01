@@ -219,7 +219,8 @@ func EncryptFile(sourceFilename, destinationFilename string,
 // If the cypherFilename does not exist, an error is returned.
 // If the clearFilename exists, an error is returned.
 func DecryptFile(cypherFilename, clearFilename string) (decryptionResult gpgme.DecryptResultType,
-	filename string, signatures []gpgme.SignatureType, err error) {
+	filename string, signatures []gpgme.Signature, warning string, err error) {
+	warning = ""
 	err = nil
 
 	fileStat, err := os.Stat(cypherFilename)
@@ -293,8 +294,13 @@ func DecryptFile(cypherFilename, clearFilename string) (decryptionResult gpgme.D
 
 	err = myContext.DecryptVerify(dataIn, dataOut)
 	if err != nil {
-		err = fmt.Errorf("DecryptFile - DecryptVerify failed: %w", err)
-		return
+		// continue on "No data" error (but note it), end otherwise
+		if err.Error() == "No data" {
+			warning = "DecryptFile - DecryptVerify: no encrypted data"
+		} else {
+			err = fmt.Errorf("DecryptFile - DecryptVerify failed: %w", err)
+			return
+		}
 	}
 
 	decryptionResult, err = myContext.DecryptResult()

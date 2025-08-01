@@ -32,10 +32,6 @@ import (
 
 func main() {
 
-	for i, a := range os.Args {
-		fmt.Fprintf(os.Stderr, "os.Args[%d] = %s\n", i, a)
-	}
-
 	// check if there is exactly one argument
 	if len(os.Args) != 1 {
 		fmt.Fprintf(os.Stderr, "Usage: text-verify < SIGNED_TEXT\n")

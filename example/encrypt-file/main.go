@@ -35,12 +35,13 @@ func main() {
 
 	var dr gpgme.DecryptResultType
 	var decFilename string
-	var sigs []gpgme.SignatureType
+	var sigs []gpgme.Signature
+	var warn string
 	var err error
 
 	// check if there ar least 2 arguments
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: encrypt-file <encrypt|decrypt> <filename> <recipient1> [<recipient2> ...]")
+		fmt.Println("Usage: encrypt-file <encrypt|decrypt> <filename> [<recipient1> [<recipient2> ...]]")
 		os.Exit(1)
 	}
 
@@ -67,15 +68,16 @@ func main() {
 		toFile := filename + ".gpg"
 		err = gpggohigh.EncryptFile(filename, toFile, recipients, true)
 	} else {
-		dr, decFilename, sigs, err = gpggohigh.DecryptFile(filename, "")
+		dr, decFilename, sigs, warn, err = gpggohigh.DecryptFile(filename, "")
 	}
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		os.Exit(1)
+		//os.Exit(1)
 	}
-	if op == actionDecrypt {
 
+	if op == actionDecrypt {
 		fmt.Println("== DECRYPT RESULT ==")
+		fmt.Println("Warning:               ", warn)
 		fmt.Println("Unsupported algorithm: ", dr.UnsupportedAlgorithm)
 		fmt.Println("Wrong key usage:       ", gpggohigh.Bool2str(dr.WrongKeyUsage))
 		fmt.Println("Legacy cipher no MDC:  ", gpggohigh.Bool2str(dr.LegacyCipherNoMDC))
@@ -83,12 +85,12 @@ func main() {
 		fmt.Println("Is Restricted (DE VS): ", gpggohigh.Bool2str(dr.IsDEVS))
 		fmt.Println("Beta compliance:       ", gpggohigh.Bool2str(dr.BetaCompliance))
 		fmt.Println("File name:             ", dr.Filename)
-		fmt.Println("Session key:           ", dr.SessionKey)
+		//fmt.Println("Session key:           ", dr.SessionKey)
 		fmt.Println("Symkey algo:           ", dr.SymkeyAlgo)
 		for _, r := range dr.Recipients {
 			fmt.Println("  - Recipient Key ID:  ", r.KeyID)
 			fmt.Println("              Status:  ", gpggohigh.CondErrStr(r.Status, "(none)"))
-			fmt.Println("         Pubkey algo:  ", r.PubkeyAlgo)
+			fmt.Println("         Pubkey algo:  ", r.PubkeyAlgo, "-", gpgme.PubkeyAlgoName(r.PubkeyAlgo))
 		}
 
 		fmt.Println("== VERIFY RESULT ==")
@@ -104,8 +106,8 @@ func main() {
 			fmt.Println("    Chain model:       ", gpggohigh.Bool2str(s.ChainModel))
 			fmt.Println("    Validity:          ", s.Validity)
 			fmt.Println("    Validity reason:   ", gpggohigh.CondErrStr(s.ValidityReason, "(none)"))
-			fmt.Println("    Pubkey algo:       ", s.PubkeyAlgo)
-			fmt.Println("    Hash algo:         ", s.HashAlgo)
+			fmt.Println("    Pubkey algo:       ", s.PubkeyAlgo, "-", gpgme.PubkeyAlgoName(s.PubkeyAlgo))
+			fmt.Println("    Hash algo:         ", s.HashAlgo, "-", gpgme.HashAlgoName(s.HashAlgo))
 		}
 
 	}

@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-2.1-or-later
  */
 
- package main
+package main
 
 import (
 	"fmt"
@@ -30,10 +30,20 @@ import (
 func main() {
 
 	var searchFor string
-	if len(os.Args) < 2 {
+	switch len(os.Args) {
+	case 1:
 		searchFor = ""
-	} else {
+	case 2:
 		searchFor = os.Args[1]
+	default:
+		fmt.Println("Usage: list-keys [<search-string>|-h]")
+		os.Exit(1)
+	}
+	if searchFor == "-h" || searchFor == "--help" {
+		fmt.Println("Usage: list-keys [<search-string>|-h]")
+		fmt.Println("List all keys in the keyring, optionally filtered by a search string.")
+		fmt.Println("Only the fingerprints and user IDs of the keys are printed.")
+		os.Exit(0)
 	}
 
 	keys, err := gpggohigh.KeyList(searchFor)
